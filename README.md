@@ -3,7 +3,7 @@
 [AWS Step Functions](https://aws.amazon.com/step-functions/?step-functions.sort-by=item.additionalFields.postDateTime&step-functions.sort-order=desc)
 is a serverless, AWS-managed workflow service that developers use to
 orchestrate their jobs. It provides multiple features such as process parallelization,
-error management, observability, service integration, but does not provide yet provide partial retries (unlike [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/dag-run.html#re-run-tasks)).
+error management, observability, service integration, but does not yet provide partial retries (unlike [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/dag-run.html#re-run-tasks)).
 
 This means that whenever a task in your state machine fails, you cannot re-launch this specific task directly from the Step Functions console.
 To resume the process, **you need to re-start the state machine execution from the beginning**. This is OK when the error happens
@@ -20,13 +20,14 @@ service team to deliver this feature (which is, again, available for years in Ai
 
 ## Solution overview
 
-This CDK code deploys the architecture summarized in the architecture below
+This CDK code deploys the architecture summarized in the diagram below
 
 ![architecture](assets/img/step_function_partial.png)
 
 It notably includes:
 * **An S3 bucket**: This bucket stores the Glue scripts. It is also used by the Lambda function and the Glue jobs as the data storage solution.
-* **A Glue database**: This is metadata store is used by Glue jobs to access your data.
+* **A Glue database**: This database is used to organise all metadata tables produced by this example. In this case, tables define data
+  stored in Amazon S3.
 * **A state machine**: This workflow is made of 4 steps:
     * A **Lambda function** that generates raw data in S3 by calling a public API.
     * A **Glue job** that transforms raw data into silver data.
@@ -63,7 +64,9 @@ For this deployment, you will need:
 * aws-cdk: installed globally (npm install -g aws-cdk) 
 * git client
 
-> :warning: **Lake Formation disclaimer**: This architecture will work if Lake Formation is not activated in your AWS environment. If this is already the case, then you might need to check that Lake Formation allows the Glue job role to read and write in the Glue database. 
+> :warning: **Lake Formation disclaimer**: This architecture works if Lake Formation is not activated in your AWS environment. 
+> If you are using Lake Formation to manage access to Glue databases, then the Glue jobs might fail because of a permission issue.
+> In this case you need to edit Glue role permissions in Lake Formation, and grant read/write to the Glue database. 
 
 #### Clone the repository
 Clone the GitHub repository on your machine:

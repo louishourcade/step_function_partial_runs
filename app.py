@@ -13,7 +13,7 @@ StateMachineStack(
     app,
     "AWSStateFunctionPartialRuns",
     env=cdk.Environment(account=aws_acccount, region=region),
-    tags={"Project": "Step Function partial runs"}
+    tags={"Project": "Step Function partial runs"},
 )
 
 app.synth()

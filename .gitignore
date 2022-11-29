@@ -2,5 +2,5 @@ commands.txt
 *.log
 .idea
 cdk.out
-WAF_Stack/__pycache__
+Constructs/__pycache__/
 venv

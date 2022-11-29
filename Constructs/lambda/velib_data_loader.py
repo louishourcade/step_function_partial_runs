@@ -17,12 +17,16 @@ dateTimeObj = datetime.now()
 timestamp = f"{dateTimeObj.year}-{dateTimeObj.month}-{dateTimeObj.day}-{dateTimeObj.hour}-{dateTimeObj.minute}-{dateTimeObj.second}"
 file_name = f"velib-data-raw/{timestamp}/velib-availability.csv"
 # bucket="step-function-poc-949035406805"
-bucket=os.environ.get("S3_BUCKET_NAME")
+bucket = os.environ.get("S3_BUCKET_NAME")
 
-def handler(event,context):
+
+def handler(event, context):
     print(f"Starting Lambda function")
     nbrows = 2000
-    url = "https://opendata.paris.fr/api/records/1.0/search/?dataset=velib-disponibilite-en-temps-reel&q=&rows=" + str(nbrows)
+    url = (
+        "https://opendata.paris.fr/api/records/1.0/search/?dataset=velib-disponibilite-en-temps-reel&q=&rows="
+        + str(nbrows)
+    )
     resp = requests.get(url)
 
     if resp.status_code != 200:
@@ -30,19 +34,19 @@ def handler(event,context):
     else:
         records = json.loads(resp.content)["records"]
         columns = [
-            'record_timestamp',
-            'stationcode',
-            'is_renting',
-            'is_returning',
-            'is_installed',
-            'capacity',
-            'numbikesavailable',
-            'numdocksavailable',
-            'name',
-            'mechanical',
-            'ebike',
-            'nom_arrondissement_communes',
-            'coordonnees_geo'
+            "record_timestamp",
+            "stationcode",
+            "is_renting",
+            "is_returning",
+            "is_installed",
+            "capacity",
+            "numbikesavailable",
+            "numdocksavailable",
+            "name",
+            "mechanical",
+            "ebike",
+            "nom_arrondissement_communes",
+            "coordonnees_geo",
         ]
         dff = pd.DataFrame(columns=columns)
 
@@ -60,15 +64,12 @@ def handler(event,context):
                 rec.get("fields").get("mechanical"),
                 rec.get("fields").get("ebike"),
                 rec.get("fields").get("nom_arrondissement_communes"),
-                rec.get("fields").get("coordonnees_geo")
+                rec.get("fields").get("coordonnees_geo"),
             ]
 
     csv_buffer = StringIO()
     dff.to_csv(csv_buffer, index=False)
-    s3_resource = boto3.resource('s3')
+    s3_resource = boto3.resource("s3")
     s3_resource.Object(bucket, file_name).put(Body=csv_buffer.getvalue())
 
-    return {
-        "Status": "SUCCESS",
-        "timestamp": timestamp
-    }
+    return {"Status": "SUCCESS", "timestamp": timestamp}

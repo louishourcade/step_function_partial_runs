@@ -174,3 +174,5 @@ This code provides you with a working example that illustrates how you could ena
 It requires to implement some custom logic when defining the state machine, but in the end it is pretty easy for the end user to partially run their workflows.
 As mentioned at the top of this document, **partial retries are available in Airflow for a long time**. So there is hope that AWS
 will release a new Step Functions feature to catch up.
+
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

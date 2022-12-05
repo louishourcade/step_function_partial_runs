@@ -99,7 +99,7 @@ cdk bootstrap aws://<tooling-account-id>/<aws-region>
 
 #### Deploy the CDK application
 
-Now that your AWS account is bootstrapped, and that you configured your WAF deployment, you can deploy the CDK application with the following command:
+Now that your AWS account is bootstrapped, and that you configured your deployment, you can deploy the CDK application with the following command:
 
 ```bash
 cdk deploy AWSStateFunctionPartialRuns
